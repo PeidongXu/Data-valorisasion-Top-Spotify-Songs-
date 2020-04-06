@@ -1,0 +1,64 @@
+---
+title: "Spotify top 2010-2019 analysis"
+output: html_notebook
+---
+# Loading libraries
+```{r}
+library(MASS)
+library(ggplot2)
+library(gridExtra)
+library(digest)
+library(hrbrthemes)
+library(GGally)
+library(viridis)
+library(fmsb)
+```
+
+# Initializing data
+```{r}
+top10s <- fread("../top10s.csv")
+names(top10s)[names(top10s) == "top genre"] <- "genre"
+names(top10s)[names(top10s) == "V1"] <- "ID"
+top10sATTR <- subset(top10s, select = -c(ID, title, genre, artist, pop))
+```
+
+# Popularity scatter plot
+```{r}
+orderedPOP <- top10s[order(pop),]
+orderedPOP$ID <- seq.int(nrow(s))
+ggplot(orderedPOP, aes(x=ID, y=pop)) + geom_point(size=2, shape=23)
+```
+
+# Histogram of genres
+```{r}
+ggplot(top10s, aes(x=genre, color=genre, fill=genre)) + stat_count() + theme(axis.text.x=element_blank())
+```
+The *dance pop* genre is dominant followed by *pop* and *canadian pop*. The other genres are minor.
+
+# Boxplots of popularity attribute for each genre
+```{r}
+ggplot(top10s) + geom_boxplot(aes(x=top10s$genre, color=genre, fill=genre, y=top10s$pop)) + labs(x="genre", y="popularity") + theme(axis.text.x=element_blank())
+```
+From here we can see that the most successful genres are *brostep* and *electro*. As these genres are minor compared to *dance pop*, it is difficult to say if there is some kind of rule behind their popularity.
+
+# Correlation between attributes
+```{r}
+ggpairs(top10s, columns = 6:15)
+```
+Here we will only discuss values with at least 0.1 correlation value.
+
+So top 4 most popularity-influencing attributes are:
+
+1. *dB* (loudness) with 0.157
+2. *dnce* (danceability) with 0.116
+3. *dur* (duration) with -0.104
+
+We also can see that:
+
+* *dB* is correlated with *val* (valence), *nrgy* (energy) and already mentioned *dnce*
+* *dnce* as well is correlated with *val* and *nrgy*, but also with *bpm* and *dur*
+* *dur* is correlated with *nrgy*, *dnce* and *dB*
+
+So after this rough analysis we could say that the most important attributes for popularity are:
+
+*dB*, *dnce*, *dur*, *val*, *nrgy* and *bpm*
