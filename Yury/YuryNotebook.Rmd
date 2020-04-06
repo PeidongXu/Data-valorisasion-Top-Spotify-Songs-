@@ -45,7 +45,7 @@ From here we can see that the most successful genres are *brostep* and *electro*
 ```{r}
 ggpairs(top10s, columns = 6:15)
 ```
-Here we will only discuss values with at least 0.1 correlation value.
+Here we will only discuss attributes with at least 0.1 correlation value.
 
 So top 4 most popularity-influencing attributes are:
 
