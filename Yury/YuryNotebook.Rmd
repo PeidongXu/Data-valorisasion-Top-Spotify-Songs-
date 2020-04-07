@@ -4,6 +4,7 @@ output: html_notebook
 ---
 # Loading libraries
 ```{r}
+library(data.table)
 library(MASS)
 library(ggplot2)
 library(gridExtra)
@@ -25,7 +26,7 @@ top10sATTR <- subset(top10s, select = -c(ID, title, genre, artist, pop))
 # Popularity scatter plot
 ```{r}
 orderedPOP <- top10s[order(pop),]
-orderedPOP$ID <- seq.int(nrow(s))
+orderedPOP$ID <- seq.int(nrow(orderedPOP))
 ggplot(orderedPOP, aes(x=ID, y=pop)) + geom_point(size=2, shape=23)
 ```
 
@@ -43,7 +44,7 @@ From here we can see that the most successful genres are *brostep* and *electro*
 
 # Correlation between attributes
 ```{r}
-ggpairs(top10s, columns = 6:15)
+print(ggpairs(top10s, columns = 6:15), progress = F)
 ```
 Here we will only discuss attributes with at least 0.1 correlation value.
 
